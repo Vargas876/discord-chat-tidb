@@ -139,6 +139,25 @@ export const offNewMessage = (callback) => {
 };
 
 /**
+ * Indicadores de escritura
+ */
+export const emitTyping = (conversationId, userName) => {
+  if (socket) socket.emit('typing', { conversation_id: conversationId, user_name: userName });
+};
+
+export const emitStopTyping = (conversationId, userName) => {
+  if (socket) socket.emit('stop-typing', { conversation_id: conversationId, user_name: userName });
+};
+
+export const onTyping = (callback) => {
+  if (socket) socket.on('user-typing', callback);
+};
+
+export const onStopTyping = (callback) => {
+  if (socket) socket.on('user-stop-typing', callback);
+};
+
+/**
  * Reacciones
  */
 export const addReactionSocket = (data) => {
