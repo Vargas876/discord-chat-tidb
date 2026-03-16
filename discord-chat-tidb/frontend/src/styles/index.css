@@ -12,15 +12,25 @@
 html, body, #root {
   height: 100%;
   width: 100%;
+  background: radial-gradient(circle at 0% 0%, #1a1b26 0%, #0d1117 100%);
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: #36393F;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  background-color: #0d1117;
   color: #F2F3F5;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+:root {
+  --neon-primary: #5865F2;
+  --neon-secondary: #00d4ff;
+  --neon-accent: #ff00c8;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 /* Scrollbar personalizada estilo Discord */
@@ -45,8 +55,38 @@ body {
 
 /* Utilidades personalizadas */
 @layer utilities {
-  .text-shadow {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  .text-glow {
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.5), 0 0 20px rgba(88, 101, 242, 0.2);
+  }
+  
+  .glass-panel {
+    background: rgba(17, 25, 40, 0.75);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.125);
+  }
+
+  .neon-border {
+    position: relative;
+    border-radius: 0.5rem;
+  }
+
+  .neon-border::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(45deg, #5865f2, #00d4ff, #ff00c8, #5865f2);
+    background-size: 400%;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s;
+    filter: blur(5px);
+  }
+
+  .neon-border:hover::after {
+    opacity: 1;
+    animation: neon-glow 20s linear infinite;
   }
   
   .transition-all-fast {
@@ -58,7 +98,8 @@ body {
   }
   
   .hover-lift:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -108,33 +149,54 @@ body {
   animation: pulse-ring 1.5s ease-out infinite;
 }
 
-/* Estados de carga */
-.loading-dots {
-  display: inline-flex;
-  gap: 4px;
+@keyframes neon-glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.loading-dots span {
+@keyframes cosmic-bg {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+.cosmic-void {
+  background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0d1117 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-void::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: cosmic-bg 100s linear infinite;
+  opacity: 0.3;
+}
+
+/* Scrollbar personalizada futurista */
+::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
-  background-color: currentColor;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
 }
 
-.loading-dots span:nth-child(1) {
-  animation-delay: -0.32s;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.loading-dots span:nth-child(2) {
-  animation-delay: -0.16s;
-}
-
-@keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1);
-  }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #5865f2, #00d4ff);
+  border-radius: 10px;
 }

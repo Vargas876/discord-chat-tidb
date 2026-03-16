@@ -41,14 +41,13 @@ function AppContent() {
 
   if (isLoading || authLoading) {
     return (
-      <div className="h-screen w-full bg-discord-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="loading-dots text-brand-primary mb-4">
-            <span></span>
-            <span></span>
-            <span></span>
+      <div className="h-screen w-full cosmic-void flex items-center justify-center">
+        <div className="text-center relative">
+          <div className="absolute inset-0 bg-brand-primary/20 blur-3xl rounded-full scale-150 animate-pulse"></div>
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-6 mx-auto shadow-[0_0_15px_rgba(88,101,242,0.5)]"></div>
+            <p className="text-white font-bold tracking-[0.2em] uppercase text-xs animate-pulse">Sincronizando Nodo...</p>
           </div>
-          <p className="text-discord-300">Cargando...</p>
         </div>
       </div>
     );
