@@ -1,6 +1,6 @@
 # 👨‍🏫 Guía de Acceso para el Profesor
 
-Esta guía explica cómo otorgar acceso a la base de datos TiDB Cloud al profesor **Fredy** (o cualquier otro usuario).
+Esta guía explica cómo otorgar acceso a la base de datos TiDB Cloud al profesor **Fredy Alarcon** (o cualquier otro usuario).
 
 ---
 
@@ -16,7 +16,7 @@ Database: test
 
 ---
 
-## 🔐 Método 1: Acceso Directo a TiDB Cloud (Recomendado)
+## 🔐 Método 1: Acceso Directo a TiDB Cloud 
 
 ### Paso 1: Agregar IP del Profesor
 
@@ -28,7 +28,7 @@ Database: test
 
 4. Click en **"Add IP Address"**
 5. Opciones:
-   - **Opción A**: Pedir a Fredy su IP pública ([https://whatismyipaddress.com](https://whatismyipaddress.com))
+   - **Opción A**: Usar IP pública ([https://whatismyipaddress.com](https://whatismyipaddress.com))
    - **Opción B**: Usar `0.0.0.0/0` (menos seguro, acceso global)
 
 ### Paso 2: Crear Usuario Adicional (Opcional pero recomendado)
@@ -50,8 +50,6 @@ FLUSH PRIVILEGES;
 ```
 
 ### Paso 3: Compartir Credenciales
-
-Envía a Fredy:
 
 ```
 🗄️ Acceso a Base de Datos TiDB Cloud
@@ -76,6 +74,7 @@ https://tidbcloud.com
 ### Instalar cliente MySQL
 
 **Windows:**
+
 ```powershell
 # Descargar desde https://dev.mysql.com/downloads/installer/
 # O usar Chocolatey
@@ -83,11 +82,13 @@ choco install mysql
 ```
 
 **Mac:**
+
 ```bash
 brew install mysql-client
 ```
 
 **Linux:**
+
 ```bash
 sudo apt-get install mysql-client
 ```
@@ -231,24 +232,6 @@ No requiere instalación de ningún software.
 
 ## ⚠️ Notas de Seguridad
 
-1. **No compartir contraseñas por email** - Usar herramientas seguras como:
-   - [1Password](https://1password.com)
-   - [Bitwarden](https://bitwarden.com)
-   - WhatsApp/Telegram (mejor que email)
-
-2. **Restringir IPs** - En lugar de `0.0.0.0/0`, usar la IP específica del profesor
-
+1. **Restringir IPs** - En lugar de `0.0.0.0/0`, usar la IP específica del profesor
 3. **Usar usuario limitado** - El usuario `fredy` solo tiene permisos sobre la BD `test`, no sobre todo el cluster
-
 4. **Rotar contraseñas** - Cambiar la contraseña después de la revisión del proyecto
-
----
-
-## 📞 Soporte
-
-Si hay problemas de conexión:
-
-1. Verificar que la IP del profesor está en la lista blanca de TiDB Cloud
-2. Confirmar que usa SSL/TLS obligatoriamente
-3. Verificar que el puerto 4000 está abierto en el firewall del profesor
-4. Contactar soporte de TiDB: https://docs.pingcap.com/tidbcloud/tidb-cloud-support

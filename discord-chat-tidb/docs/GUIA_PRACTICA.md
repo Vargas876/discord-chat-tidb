@@ -4,7 +4,7 @@
 
 En esta práctica, exploraremos la construcción de una aplicación de chat de alto rendimiento inspirada en Discord. Utilizaremos **TiDB Cloud** como nuestra base de datos distribuida, **Next.js** para nuestra API, y **WebSockets (Socket.io)** para la comunicación bidireccional en tiempo real.
 
-![Interfaz de Discord Style](images/discord_ui.png)
+![1773703128996](image/GUIA_PRACTICA/1773703128996.png)
 
 ## 2. Arquitectura del Sistema
 
@@ -15,7 +15,6 @@ La aplicación se divide en tres componentes principales que trabajan en armoní
 3. **Servidor WebSocket (Node.js)**: Gestiona el túnel de comunicación en tiempo real.
 4. **TiDB Cloud**: Base de datos SQL distribuida con escalabilidad horizontal.
 
-![Diagrama de Arquitectura](images/architecture.png)
 
 ## 3. Configuración de la Base de Datos (TiDB Cloud)
 

@@ -3,46 +3,43 @@ import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
 import { ChatProvider } from './context/ChatContext';
 import { initSocket, disconnectSocket } from './services/socket';
+import AuthPage from './pages/AuthPage';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 /**
  * Componente principal de la aplicación
  * 
  * Estructura:
- * - Sidebar: Lista de conversaciones
- * - ChatWindow: Área de mensajes activa
  */
-function App() {
+function AppContent() {
+  const { user, loading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Inicializar conexión WebSocket (No bloqueante)
+    // Inicializar conexión WebSocket
     const setupSocket = async () => {
       try {
-        // No bloqueamos el renderizado de la app por el socket
         initSocket().then(() => {
           console.log('✅ Conexión WebSocket establecida');
         }).catch(err => {
           console.warn('⚠️ WebSocket no disponible inicialmente:', err.message);
-          // No seteamos error global para permitir que la app funcione vía HTTP
         });
       } catch (err) {
         console.error('❌ Error fatal en setupSocket:', err);
       } finally {
-        // La app se considera cargada independientemente del socket
         setIsLoading(false);
       }
     };
 
     setupSocket();
 
-    // Cleanup al desmontar
     return () => {
       disconnectSocket();
     };
   }, []);
 
-  if (isLoading) {
+  if (isLoading || authLoading) {
     return (
       <div className="h-screen w-full bg-discord-900 flex items-center justify-center">
         <div className="text-center">
@@ -51,40 +48,32 @@ function App() {
             <span></span>
             <span></span>
           </div>
-          <p className="text-discord-300">Conectando al servidor...</p>
+          <p className="text-discord-300">Cargando...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="h-screen w-full bg-discord-900 flex items-center justify-center">
-        <div className="text-center max-w-md px-4">
-          <div className="text-danger text-5xl mb-4">⚠️</div>
-          <h2 className="text-xl font-semibold text-white mb-2">Error de conexión</h2>
-          <p className="text-discord-400 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-brand-primary hover:bg-brand-hover text-white rounded-md transition-colors"
-          >
-            Reintentar
-          </button>
-        </div>
-      </div>
-    );
+  // Si no hay usuario, mostrar página de Auth
+  if (!user) {
+    return <AuthPage />;
   }
 
   return (
     <ChatProvider>
       <div className="h-screen w-full bg-discord-900 flex overflow-hidden">
-        {/* Sidebar con lista de conversaciones */}
         <Sidebar />
-        
-        {/* Área principal de chat */}
         <ChatWindow />
       </div>
     </ChatProvider>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

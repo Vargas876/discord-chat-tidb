@@ -15,11 +15,13 @@ model User {
   id         String   @id @default(uuid())
   name       String
   email      String   @unique
+  password   String   @default("$2b$10$EpJSqhWp68.zP.6cEisSre8.B9NnQk/e6.c8Gf6oN1G6X6S6S6S6S") // Default dummy password
   avatar     String?
   created_at DateTime @default(now())
   
   // Relaciones
   messages   Message[]
+  reactions  Reaction[]
   
   @@map("users")
 }
@@ -41,15 +43,37 @@ model Message {
   id              String   @id @default(uuid())
   conversation_id String
   sender_id       String
-  content         String   @db.Text
+  content         String?  @db.Text
+  type            String   @default("TEXT") // TEXT, IMAGE, STICKER
+  attachment_url  String?  @db.Text
   created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
   
   // Relaciones
   conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
   sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  reactions       Reaction[]
   
   @@index([conversation_id])
   @@index([sender_id])
   @@index([created_at])
   @@map("messages")
+}
+
+// Modelo de Reacciones
+model Reaction {
+  id         String   @id @default(uuid())
+  message_id String
+  user_id    String
+  emoji      String   // El emoji de la reacción
+  created_at DateTime @default(now())
+
+  // Relaciones
+  message    Message @relation(fields: [message_id], references: [id], onDelete: Cascade)
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([message_id, user_id, emoji])
+  @@index([message_id])
+  @@index([user_id])
+  @@map("reactions")
 }

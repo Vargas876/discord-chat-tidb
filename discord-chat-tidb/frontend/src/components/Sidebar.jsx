@@ -1,29 +1,27 @@
 import React, { useState } from 'react';
 import { useChat } from '../context/ChatContext';
-import { MessageSquare, Plus, Hash, Users, ChevronDown } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { MessageSquare, Plus, Hash, Users, ChevronDown, LogOut } from 'lucide-react';
 import { conversationService } from '../services/api';
 
 /**
  * Sidebar - Barra lateral izquierda
  * 
  * Muestra:
- * - Selector de usuario actual
  * - Lista de conversaciones/canales
  * - Botón para crear nueva conversación
+ * - Perfil de usuario y Logout
  */
 const Sidebar = () => {
   const {
-    currentUser,
-    users,
     conversations,
     selectedConversation,
     setSelectedConversation,
-    switchUser,
     addConversation,
     isLoading,
   } = useChat();
 
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { currentUser, logout } = useAuth();
   const [showNewChannelModal, setShowNewChannelModal] = useState(false);
   const [newChannelName, setNewChannelName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -56,70 +54,6 @@ const Sidebar = () => {
       <div className="h-14 px-4 bg-discord-900 border-b border-discord-950 flex items-center justify-between hover:bg-discord-800 cursor-pointer transition-colors">
         <h1 className="font-bold text-white truncate">💬 Chat TiDB</h1>
         <ChevronDown size={20} className="text-discord-400" />
-      </div>
-
-      {/* Selector de usuario */}
-      <div className="px-3 py-2">
-        <div className="relative">
-          <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-full flex items-center gap-3 p-2 rounded-md bg-discord-800 hover:bg-discord-700 transition-colors"
-          >
-            <span className="text-discord-400 text-sm">Usuario:</span>
-            {currentUser ? (
-              <>
-                <img
-                  src={currentUser.avatar}
-                  alt={currentUser.name}
-                  className="w-6 h-6 rounded-full"
-                />
-                <span className="text-white text-sm truncate flex-1 text-left">
-                  {currentUser.name}
-                </span>
-              </>
-            ) : (
-              <span className="text-discord-400 text-sm">Cargando...</span>
-            )}
-            <ChevronDown size={16} className="text-discord-400" />
-          </button>
-
-          {/* Dropdown de usuarios */}
-          {showUserMenu && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-discord-800 rounded-md shadow-lg z-50 border border-discord-700 animate-fadeIn">
-              {isLoading.users ? (
-                <div className="p-3 text-discord-400 text-sm text-center">
-                  Cargando...
-                </div>
-              ) : (
-                users.map((user) => (
-                  <button
-                    key={user.id}
-                    onClick={() => {
-                      switchUser(user.id);
-                      setShowUserMenu(false);
-                    }}
-                    className={`w-full flex items-center gap-3 p-3 hover:bg-discord-700 transition-colors first:rounded-t-md last:rounded-b-md ${
-                      currentUser?.id === user.id ? 'bg-discord-700' : ''
-                    }`}
-                  >
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div className="flex-1 text-left">
-                      <p className="text-white text-sm font-medium">{user.name}</p>
-                      <p className="text-discord-400 text-xs">{user.email}</p>
-                    </div>
-                    {currentUser?.id === user.id && (
-                      <div className="w-2 h-2 bg-success rounded-full"></div>
-                    )}
-                  </button>
-                ))
-              )}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Separador */}
@@ -187,23 +121,33 @@ const Sidebar = () => {
 
       {/* Footer con info del usuario actual */}
       {currentUser && (
-        <div className="p-3 bg-discord-950 flex items-center gap-3">
-          <div className="relative">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="w-8 h-8 rounded-full"
-            />
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-discord-950 rounded-full flex items-center justify-center">
-              <div className="w-2.5 h-2.5 bg-success rounded-full"></div>
+        <div className="p-3 bg-discord-950 flex items-center justify-between gap-3 group">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="relative flex-shrink-0">
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.name}
+                className="w-8 h-8 rounded-full"
+              />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-discord-950 rounded-full flex items-center justify-center">
+                <div className="w-2.5 h-2.5 bg-success rounded-full"></div>
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white text-sm font-medium truncate">
+                {currentUser.name}
+              </p>
+              <p className="text-discord-400 text-xs truncate">En línea</p>
             </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium truncate">
-              {currentUser.name}
-            </p>
-            <p className="text-discord-400 text-xs truncate">En línea</p>
-          </div>
+          
+          <button 
+            onClick={logout}
+            className="p-2 text-discord-400 hover:text-red-400 hover:bg-discord-800 rounded-md transition-all flex-shrink-0"
+            title="Cerrar sesión"
+          >
+            <LogOut size={18} />
+          </button>
         </div>
       )}
 

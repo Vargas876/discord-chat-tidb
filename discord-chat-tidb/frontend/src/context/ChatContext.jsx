@@ -1,20 +1,9 @@
-/**
- * Contexto global de Chat
- * 
- * Maneja el estado compartido entre componentes:
- * - Usuario actual
- * - Conversación seleccionada
- * - Lista de conversaciones
- * - Lista de usuarios
- */
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { userService, conversationService } from '../services/api';
+import { useAuth } from './AuthContext';
 
-// Crear contexto
 const ChatContext = createContext();
 
-// Hook personalizado para usar el contexto
 export const useChat = () => {
   const context = useContext(ChatContext);
   if (!context) {
@@ -23,10 +12,11 @@ export const useChat = () => {
   return context;
 };
 
-// Provider del contexto
 export const ChatProvider = ({ children }) => {
+  const { user: authUser } = useAuth();
+  
   // Estados
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(authUser);
   const [users, setUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -39,19 +29,19 @@ export const ChatProvider = ({ children }) => {
     conversations: null,
   });
 
+  // Sincronizar currentUser con authUser
+  useEffect(() => {
+    setCurrentUser(authUser);
+  }, [authUser]);
+
   // Cargar usuarios al iniciar
   useEffect(() => {
     const loadUsers = async () => {
       try {
         setIsLoading((prev) => ({ ...prev, users: true }));
         const response = await userService.getAll();
-        
         if (response.success) {
           setUsers(response.data);
-          // Seleccionar primer usuario como currentUser
-          if (response.data.length > 0) {
-            setCurrentUser(response.data[0]);
-          }
         }
       } catch (error) {
         console.error('Error cargando usuarios:', error);
@@ -60,7 +50,6 @@ export const ChatProvider = ({ children }) => {
         setIsLoading((prev) => ({ ...prev, users: false }));
       }
     };
-
     loadUsers();
   }, []);
 
@@ -73,8 +62,8 @@ export const ChatProvider = ({ children }) => {
         
         if (response.success) {
           setConversations(response.data);
-          // Seleccionar primera conversación
-          if (response.data.length > 0) {
+          // Seleccionar primera conversación si no hay una seleccionada
+          if (response.data.length > 0 && !selectedConversation) {
             setSelectedConversation(response.data[0]);
           }
         }
@@ -85,11 +74,10 @@ export const ChatProvider = ({ children }) => {
         setIsLoading((prev) => ({ ...prev, conversations: false }));
       }
     };
-
     loadConversations();
   }, []);
 
-  // Cambiar usuario actual
+  // Cambiar usuario actual (solo para simulación/demo, aunque ahora es real)
   const switchUser = (userId) => {
     const user = users.find((u) => u.id === userId);
     if (user) {
@@ -97,13 +85,11 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  // Agregar una nueva conversación a la lista
   const addConversation = (conversation) => {
     setConversations((prev) => [conversation, ...prev]);
     setSelectedConversation(conversation);
   };
 
-  // Actualizar contador de mensajes de una conversación
   const updateConversationMessageCount = (conversationId) => {
     setConversations((prev) =>
       prev.map((conv) =>
@@ -114,7 +100,6 @@ export const ChatProvider = ({ children }) => {
     );
   };
 
-  // Valor del contexto
   const value = {
     currentUser,
     users,

@@ -97,10 +97,38 @@ const MessageInput = ({ conversationId, currentUser }) => {
     }
   };
 
+  // Enviar Imagen
+  const sendImage = () => {
+    const url = prompt('Introduce la URL de la imagen:');
+    if (url) {
+      sendMessageSocket({
+        type: 'IMAGE',
+        attachment_url: url,
+        conversation_id: conversationId,
+        sender_id: currentUser.id,
+      });
+    }
+  };
+
+  // Enviar Sticker (Simulado)
+  const sendSticker = (stickerUrl) => {
+    sendMessageSocket({
+      type: 'STICKER',
+      attachment_url: stickerUrl,
+      conversation_id: conversationId,
+      sender_id: currentUser.id,
+    });
+  };
+
   // Placeholder dinámico según el canal
   const getPlaceholder = () => {
     if (!conversationId) return 'Selecciona un canal para comenzar';
     return `Mensaje #general`;
+  };
+
+  // Enviar Emoji
+  const sendEmoji = (emoji) => {
+    setMessage(prev => prev + emoji);
   };
 
   if (!conversationId) {
@@ -114,35 +142,60 @@ const MessageInput = ({ conversationId, currentUser }) => {
   }
 
   return (
-    <div className="px-4 pb-6">
+    <div className="px-4 pb-6 relative">
       <div className="bg-discord-800 rounded-lg">
         {/* Botones superiores */}
         <div className="flex items-center px-4 py-2 gap-2 border-b border-discord-700/50">
           <button
+            onClick={sendImage}
             className="p-2 text-discord-400 hover:text-discord-200 hover:bg-discord-700 rounded-md transition-colors"
-            title="Añadir archivo"
+            title="Añadir imagen por URL"
           >
             <Plus size={20} />
           </button>
           <div className="w-px h-6 bg-discord-700"></div>
-          <button
-            className="p-2 text-discord-400 hover:text-discord-200 hover:bg-discord-700 rounded-md transition-colors"
-            title="Regalo"
-          >
-            <Gift size={20} />
-          </button>
-          <button
-            className="p-2 text-discord-400 hover:text-discord-200 hover:bg-discord-700 rounded-md transition-colors"
-            title="Sticker"
-          >
-            <Sticker size={20} />
-          </button>
-          <button
-            className="p-2 text-discord-400 hover:text-discord-200 hover:bg-discord-700 rounded-md transition-colors"
-            title="Emoji"
-          >
-            <Smile size={20} />
-          </button>
+          
+          <div className="relative group">
+            <button
+              className="p-2 text-discord-400 hover:text-discord-200 hover:bg-discord-700 rounded-md transition-colors"
+              title="Stickers"
+            >
+              <Sticker size={20} />
+            </button>
+            {/* Menú de stickers simple */}
+            <div className="absolute bottom-full left-0 mb-2 p-2 bg-discord-900 border border-discord-700 rounded-lg hidden group-hover:flex gap-2 shadow-2xl z-20">
+              {['https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ4ZDg4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3o7TKMGpx90TJhI6Jy/giphy.gif', 
+                'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ4ZDg4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/l41lTfO7K9U1tYF0s/giphy.gif'].map((s, i) => (
+                <img 
+                  key={i} 
+                  src={s} 
+                  alt="sticker" 
+                  className="w-12 h-12 cursor-pointer hover:scale-110 transition-transform" 
+                  onClick={() => sendSticker(s)}
+                />
+              ))}
+            </div>
+          </div>
+          
+          <div className="relative group">
+            <button
+              className="p-2 text-discord-400 hover:text-discord-200 hover:bg-discord-700 rounded-md transition-colors"
+              title="Emoji"
+            >
+              <Smile size={20} />
+            </button>
+            <div className="absolute bottom-full left-0 mb-2 p-2 bg-discord-900 border border-discord-700 rounded-lg hidden group-hover:flex flex-wrap w-40 gap-1 shadow-2xl z-20">
+              {['😀', '😂', '😍', '🤔', '🔥', '👍', '❤️', '👀', '🎉', '✨'].map(emoji => (
+                <button 
+                  key={emoji} 
+                  className="p-1 hover:bg-discord-700 rounded text-xl"
+                  onClick={() => sendEmoji(emoji)}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Área de texto */}

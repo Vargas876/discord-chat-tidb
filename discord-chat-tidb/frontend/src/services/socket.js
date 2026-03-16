@@ -139,28 +139,44 @@ export const offNewMessage = (callback) => {
 };
 
 /**
- * Escuchar usuarios escribiendo
+ * Reacciones
  */
-export const onUserTyping = (callback) => {
-  if (socket) {
-    socket.on('user-typing', callback);
-  }
+export const addReactionSocket = (data) => {
+  if (socket) socket.emit('add-reaction', data);
+};
+
+export const onReactionAdded = (callback) => {
+  if (socket) socket.on('reaction-added', callback);
+};
+
+export const onReactionRemoved = (callback) => {
+  if (socket) socket.on('reaction-removed', callback);
 };
 
 /**
- * Notificar que estás escribiendo
+ * Edición y Eliminación
  */
-export const emitTyping = (conversationId, userName) => {
-  if (socket) {
-    socket.emit('typing', { conversation_id: conversationId, user_name: userName });
-  }
+export const editMessageSocket = (data) => {
+  if (socket) socket.emit('edit-message', data);
 };
 
-/**
- * Notificar que dejaste de escribir
- */
-export const emitStopTyping = (conversationId, userName) => {
+export const deleteMessageSocket = (data) => {
+  if (socket) socket.emit('delete-message', data);
+};
+
+export const onMessageUpdated = (callback) => {
+  if (socket) socket.on('message-updated', callback);
+};
+
+export const onMessageDeleted = (callback) => {
+  if (socket) socket.on('message-deleted', callback);
+};
+
+export const offMessageSocketEvents = () => {
   if (socket) {
-    socket.emit('stop-typing', { conversation_id: conversationId, user_name: userName });
+    socket.off('reaction-added');
+    socket.off('reaction-removed');
+    socket.off('message-updated');
+    socket.off('message-deleted');
   }
 };
