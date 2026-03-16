@@ -1,0 +1,55 @@
+// This is your Prisma schema file for TiDB Cloud
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("TIDB_DATABASE_URL")
+}
+
+// Modelo de Usuarios
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  avatar     String?
+  created_at DateTime @default(now())
+  
+  // Relaciones
+  messages   Message[]
+  
+  @@map("users")
+}
+
+// Modelo de Conversaciones/Canales
+model Conversation {
+  id         String   @id @default(uuid())
+  title      String
+  created_at DateTime @default(now())
+  
+  // Relaciones
+  messages   Message[]
+  
+  @@map("conversations")
+}
+
+// Modelo de Mensajes
+model Message {
+  id              String   @id @default(uuid())
+  conversation_id String
+  sender_id       String
+  content         String   @db.Text
+  created_at      DateTime @default(now())
+  
+  // Relaciones
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  
+  @@index([conversation_id])
+  @@index([sender_id])
+  @@index([created_at])
+  @@map("messages")
+}

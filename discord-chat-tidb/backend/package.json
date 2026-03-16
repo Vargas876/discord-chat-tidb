@@ -1,0 +1,32 @@
+{
+  "name": "discord-chat-backend",
+  "version": "1.0.0",
+  "description": "Backend de chat estilo Discord con TiDB y WebSockets",
+  "main": "server.js",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.20.0",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.43",
+    "prisma": "^5.7.0",
+    "typescript": "^5.3.3"
+  }
+}
