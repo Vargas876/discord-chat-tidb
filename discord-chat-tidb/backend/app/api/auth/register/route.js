@@ -43,8 +43,9 @@ export async function POST(request) {
     return NextResponse.json(userWithoutPassword, { status: 201 });
   } catch (error) {
     console.error('Error en registro:', error);
+    const message = error.message || 'Error desconocido';
     return NextResponse.json(
-      { error: 'Error al registrar usuario' },
+      { error: `Error al registrar: ${message}` },
       { status: 500 }
     );
   }

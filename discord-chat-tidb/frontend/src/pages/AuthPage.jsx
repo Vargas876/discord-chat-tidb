@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { Lock, Mail, Rocket, Shield, Sparkles, User } from 'lucide-react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Shield, Mail, Lock, User, Sparkles, Rocket } from 'lucide-react';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -41,7 +41,7 @@ const AuthPage = () => {
       <div className="glass-panel p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/10 relative z-10 animate-fadeIn overflow-hidden">
         {/* Decorative element */}
         <div className="absolute -top-12 -right-12 w-24 h-24 bg-brand-primary/30 rounded-full blur-2xl"></div>
-        
+
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center p-3 bg-brand-primary/20 rounded-xl mb-4 border border-brand-primary/30">
             <Shield className="text-brand-primary w-8 h-8" />
@@ -50,7 +50,7 @@ const AuthPage = () => {
             {isLogin ? 'Acceso Seguro' : 'Crear Identidad'}
           </h1>
           <p className="text-discord-300 text-sm">
-            {isLogin ? 'Bienvenido a la red descentralizada' : 'Únete a la nueva era de comunicación'}
+            {isLogin ? 'Bienvenido' : 'Únete a la nueva era de comunicación'}
           </p>
         </div>
 
@@ -79,7 +79,7 @@ const AuthPage = () => {
               </div>
             </div>
           )}
-          
+
           <div className="space-y-1.5">
             <label className="flex items-center gap-2 text-discord-300 text-[10px] uppercase tracking-widest font-bold ml-1">
               <Mail size={12} /> Email de Seguridad
@@ -119,7 +119,7 @@ const AuthPage = () => {
             ) : (
               <>
                 {isLogin ? <Rocket size={18} /> : <Sparkles size={18} />}
-                <span>{isLogin ? 'Autenticar' : 'Fijar Destino'}</span>
+                <span>{isLogin ? 'Autenticar' : 'Registrarse'}</span>
               </>
             )}
           </button>
@@ -132,7 +132,7 @@ const AuthPage = () => {
               onClick={() => setIsLogin(!isLogin)}
               className="text-brand-primary hover:text-white font-bold ml-2 transition-colors uppercase text-[10px] tracking-widest"
             >
-              {isLogin ? 'Registrar Nodo' : 'Iniciar Protocolo'}
+              {isLogin ? 'Registrarse' : 'Iniciar Sesión'}
             </button>
           </p>
         </div>
