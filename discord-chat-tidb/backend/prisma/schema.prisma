@@ -47,7 +47,7 @@ model Message {
   type            String   @default("TEXT") // TEXT, IMAGE, STICKER
   attachment_url  String?  @db.Text
   created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  updated_at      DateTime @default(now()) @updatedAt
   
   // Relaciones
   conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
