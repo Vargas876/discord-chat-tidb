@@ -15,14 +15,13 @@ La aplicación se divide en tres componentes principales que trabajan en armoní
 3. **Servidor WebSocket (Node.js)**: Gestiona el túnel de comunicación en tiempo real.
 4. **TiDB Cloud**: Base de datos SQL distribuida con escalabilidad horizontal.
 
-
 ## 3. Configuración de la Base de Datos (TiDB Cloud)
 
 ### 3.1. Paso 1 - Crear cuenta y Cluster
 
 Primero, regístrate en [TiDB Cloud](https://tidbcloud.com/). Crea un cluster gratuito de tipo **Serverless**.
 
-![Panel de TiDB Cloud](images/tidb_dashboard_new.png)
+![1773706301668](image/GUIA_PRACTICA/1773706301668.png)
 
 ### 3.2. Paso 2 - Configurar Networking
 
