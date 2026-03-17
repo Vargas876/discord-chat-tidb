@@ -1,4 +1,47 @@
-# PRÁCTICA GUIADA: CHAT EN TIEMPO REAL CON TiDB CLOUD
+# Discord Chat con TiDB Cloud
+
+Aplicación de chat estilo Discord construida con React, Next.js, TiDB Cloud y WebSockets.
+
+![Hero](./docs/images/discord_ui.png)
+
+![Stack](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
+![Stack](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)
+![Stack](https://img.shields.io/badge/TiDB-00A3E0?logo=mysql&logoColor=white)
+![Stack](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
+![Stack](https://img.shields.io/badge/Tailwind-06B6D4?logo=tailwindcss&logoColor=white)
+![Stack](https://img.shields.io/badge/Socket.io-010101?logo=socket.io&logoColor=white)
+
+
+
+# Integrantes
+
+Julian Velandia
+
+Juan Vargas
+
+Camilo Niño
+
+---
+
+## 🌐 Demo en Vivo
+
+La aplicación ya está desplegada y lista para usar:
+
+- **Frontend**: [https://discord-chat-frontend.vercel.app/](https://discord-chat-frontend.vercel.app/)
+- **Backend API**: [https://discord-chat-tidb-backend.vercel.app/api](https://discord-chat-tidb-backend.vercel.app/api)
+- **WebSocket Server**: `https://discord-chat-ws.onrender.com`
+- **Link del repositorio:** https://github.com/Vargas876/discord-chat-tidb.git
+
+---
+
+## 📋 Características
+
+- ✅ **Chat en tiempo real** con WebSockets (Socket.io)
+- ✅ **Diseño estilo Discord** con modo oscuro y Tailwind CSS
+- ✅ **Base de datos TiDB Cloud** (MySQL distribuido)
+- ✅ **Persistencia completa** con Prisma ORM
+- ✅ **Múltiples canales** y cambio de usuario dinámico
+- ✅ **Despliegue multi-plataforma** (Vercel + Render)
 
 ## 1. Introducción
 

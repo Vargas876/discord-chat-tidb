@@ -26,13 +26,13 @@ TiDB ("Ti" = Titanium, "DB" = Database) es una base de datos **NewSQL** open-sou
 
 ### Características Principales
 
-| Característica | Descripción |
-|----------------|-------------|
-| **SQL + NoSQL** | Sintaxis MySQL compatible + escalabilidad horizontal |
-| **HTAP** | Transacciones (OLTP) + Análisis (OLAP) en una sola BD |
-| **Cloud-Native** | Diseñada para Kubernetes y nube |
-| **Consistencia** | ACID transaccional distribuida |
-| **Escalabilidad** | Agregar/quitar nodos sin downtime |
+| Característica         | Descripción                                           |
+| ----------------------- | ------------------------------------------------------ |
+| **SQL + NoSQL**   | Sintaxis MySQL compatible + escalabilidad horizontal   |
+| **HTAP**          | Transacciones (OLTP) + Análisis (OLAP) en una sola BD |
+| **Cloud-Native**  | Diseñada para Kubernetes y nube                       |
+| **Consistencia**  | ACID transaccional distribuida                         |
+| **Escalabilidad** | Agregar/quitar nodos sin downtime                      |
 
 ### ¿Por qué TiDB para este Chat?
 
@@ -47,6 +47,7 @@ Tradicional (MySQL)          vs          TiDB
 ```
 
 **Caso de uso en chat:**
+
 - ✅ Alta escritura concurrente (muchos usuarios enviando mensajes)
 - ✅ Consultas en tiempo real (últimos mensajes)
 - ✅ Escalabilidad automática (picos de tráfico)
@@ -131,6 +132,7 @@ Una vez creado el cluster, verás el dashboard principal:
 ![TiDB Cloud Dashboard](./images/tidb-dashboard.png)
 
 > **Elementos importantes:**
+>
 > - **Status**: Debe mostrar "Active" 🟢
 > - **Connect**: Botón para obtener credenciales
 > - **SQL Editor**: Para ejecutar queries directamente
@@ -177,6 +179,7 @@ mysql://USERNAME:PASSWORD@HOST:PORT/DATABASE?sslaccept=strict
 ```
 
 Ejemplo:
+
 ```
 mysql://2LdZoyWhLHQtZn9.root:xyEkAnrwVNNZ1QFI@gateway01.us-east-1.prod.aws.tidbcloud.com:4000/test?sslaccept=strict
 ```
@@ -250,13 +253,13 @@ model Message {
 
 ### Tipos de Datos TiDB
 
-| Tipo Prisma | Tipo TiDB | Uso en Chat |
-|-------------|-----------|-------------|
-| `String @id @default(uuid())` | `VARCHAR(36)` | IDs únicos |
-| `String` | `VARCHAR(191)` | Nombres, emails |
-| `String @db.Text` | `TEXT` | Contenido de mensajes |
-| `DateTime @default(now())` | `DATETIME(3)` | Timestamps |
-| `String?` | `VARCHAR(191) NULL` | Campos opcionales |
+| Tipo Prisma                     | Tipo TiDB             | Uso en Chat           |
+| ------------------------------- | --------------------- | --------------------- |
+| `String @id @default(uuid())` | `VARCHAR(36)`       | IDs únicos           |
+| `String`                      | `VARCHAR(191)`      | Nombres, emails       |
+| `String @db.Text`             | `TEXT`              | Contenido de mensajes |
+| `DateTime @default(now())`    | `DATETIME(3)`       | Timestamps            |
+| `String?`                     | `VARCHAR(191) NULL` | Campos opcionales     |
 
 ---
 
@@ -288,6 +291,7 @@ const message = await prisma.message.create({
 ```
 
 SQL generado:
+
 ```sql
 INSERT INTO `users` (`id`, `name`, `email`, `avatar`, `created_at`)
 VALUES ('uuid', 'Alice', 'alice@example.com', 'url...', NOW());
@@ -315,6 +319,7 @@ const messages = await prisma.message.findMany({
 ```
 
 SQL generado:
+
 ```sql
 SELECT m.*, u.id, u.name, u.avatar
 FROM `messages` m
@@ -507,170 +512,6 @@ export const onNewMessage = (callback) => {
 
 ---
 
-## Despliegue en Producción
-
-### Opciones de Hosting
-
-| Servicio | Frontend | Backend API | WebSocket | Notas |
-|----------|----------|-------------|-----------|-------|
-| **Vercel** | ✅ Perfecto | ✅ Serverless | ❌ No soportado | Ideal solo para frontend |
-| **Render** | ✅ Static | ✅ Node.js | ✅ WebSocket | Opción recomendada |
-| **Railway** | ✅ Static | ✅ Node.js | ✅ WebSocket | Alternativa a Render |
-| **Netlify** | ✅ Perfecto | ❌ No aplica | ❌ No aplica | Solo frontend |
-
-### Opción Recomendada: Render
-
-Render soporta todos los componentes del proyecto.
-
-#### 1. Desplegar Backend + WebSocket (Juntos)
-
-Crear `render.yaml` en la raíz:
-
-```yaml
-services:
-  - type: web
-    name: discord-chat-backend
-    env: node
-    buildCommand: cd backend && npm install && npm run db:generate
-    startCommand: cd backend && node socket/server.js & npm run start
-    envVars:
-      - key: DATABASE_URL
-        sync: false  # Configurar en dashboard
-      - key: NODE_ENV
-        value: production
-    healthCheckPath: /api/users
-```
-
-#### 2. Desplegar Frontend (Separado)
-
-```yaml
-services:
-  - type: static
-    name: discord-chat-frontend
-    buildCommand: cd frontend && npm install && npm run build
-    publishDir: frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://discord-chat-backend.onrender.com
-      - key: VITE_WS_URL
-        value: wss://discord-chat-backend.onrender.com
-```
-
-### Configuración para Vercel (Frontend) + Render (Backend)
-
-#### Frontend en Vercel
-
-1. Sube el proyecto a GitHub
-2. Conecta Vercel al repo
-3. Configura:
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Variables de entorno:
-   ```
-   VITE_API_URL=https://tu-backend.onrender.com
-   VITE_WS_URL=wss://tu-backend.onrender.com
-   ```
-
-#### Backend en Render
-
-1. Crea un Web Service en Render
-2. Conecta al mismo repo
-3. Configura:
-   - **Root Directory**: `backend`
-   - **Build Command**: `npm install && npx prisma generate`
-   - **Start Command**: `node socket/server.js`
-4. Variables de entorno:
-   ```
-   DATABASE_URL=mysql://...tidbcloud.com:4000/test?sslaccept=strict
-   WS_PORT=10000  # Render asigna puerto automáticamente
-   ```
-
-### Consideraciones Importantes
-
-⚠️ **WebSockets en Serverless**:
-- Vercel y Netlify NO soportan WebSockets en funciones serverless
-- Solución: Usar Render/Railway para backend, o usar **Server-Sent Events (SSE)**
-
-⚠️ **CORS en Producción**:
-Actualizar `backend/next.config.js`:
-```javascript
-cors: {
-  origin: ['https://tu-frontend.vercel.app'],
-  credentials: true,
-}
-```
-
-⚠️ **Variables de Entorno**:
-Crear `.env.production` en frontend:
-```env
-VITE_API_URL=https://discord-chat-api.onrender.com
-VITE_WS_URL=wss://discord-chat-api.onrender.com
-```
-
----
-
-## Comandos Útiles
-
-### Prisma
-
-```bash
-# Generar cliente
-npx prisma generate
-
-# Sincronizar schema con BD
-npx prisma db push
-
-# Abrir UI visual
-npx prisma studio
-
-# Ejecutar seed
-node prisma/seed.js
-```
-
-### MySQL CLI con TiDB
-
-```bash
-mysql -h gateway01.us-east-1.prod.aws.tidbcloud.com \
-      -P 4000 \
-      -u 2LdZoyWhLHQtZn9.root \
-      -p \
-      --ssl-mode=VERIFY_IDENTITY
-```
-
-### Ver logs de queries
-
-En `backend/lib/prisma.js`:
-```javascript
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
-});
-```
-
----
-
-## Troubleshooting
-
-### Error: "Access denied"
-```
-Solución: Verificar que tu IP está en la lista blanca de TiDB Cloud
-```
-
-### Error: "SSL required"
-```
-Solución: Añadir ?sslaccept=strict a la URL de conexión
-```
-
-### Error: "Connection timeout"
-```
-Solución: Verificar firewall y que el cluster está activo
-```
-
-### Lentitud en queries
-```
-Solución: Verificar índices existentes con EXPLAIN
-```
-
 ---
 
 ## Recursos
@@ -681,5 +522,3 @@ Solución: Verificar índices existentes con EXPLAIN
 - 🎓 [TiDB Academy](https://www.pingcap.com/education/)
 
 ---
-
-**¡Feliz coding con TiDB!** 🚀
