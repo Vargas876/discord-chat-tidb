@@ -21,7 +21,7 @@ const Sidebar = () => {
     isLoading,
   } = useChat();
 
-  const { currentUser, logout } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const [showNewChannelModal, setShowNewChannelModal] = useState(false);
   const [newChannelName, setNewChannelName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
